@@ -7,10 +7,15 @@ import {
   Param,
   Delete,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/roles/roles.guard';
+import { Roles } from 'src/roles/roles.decorator';
+import { Role } from 'src/roles/enums/role.enum';
 
 @Controller('users')
 export class UsersController {
@@ -21,6 +26,8 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get()
   findAll() {
     return this.usersService.findAll();
